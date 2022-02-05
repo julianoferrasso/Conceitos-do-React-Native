@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
-import { ItemWrapper } from '../components/ItemWrapper';
+
 import { Task, TasksList } from '../components/TasksList';
 import { TodoInput } from '../components/TodoInput';
 
