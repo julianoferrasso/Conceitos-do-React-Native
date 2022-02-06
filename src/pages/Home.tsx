@@ -1,31 +1,61 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
-
 import { Task, TasksList } from '../components/TasksList';
 import { TodoInput } from '../components/TodoInput';
+
+interface TaskEdit {
+  taskId: number,
+  taskNewTitle: string
+}
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   
+
   function handleAddTask(newTaskTitle: string) {
+
+    const findTask = tasks.find(item => item.title === newTaskTitle)
+
+    if (findTask){
+      return Alert.alert("Task já cadastrada","Você não pode cadastrar uma task com o mesmo nome")
+    }
+
     const data = {
       id: new Date().getTime(),
       title: newTaskTitle,
       done: false
     }
     setTasks([...tasks, data])
+
+    
+    /*
+    if(!findTask){
+      const data = {
+        id: new Date().getTime(),
+        title: newTaskTitle,
+        done: false
+      }
+      setTasks([...tasks, data])
+    } else {
+      Alert.alert(
+        "Task já cadastrada",
+        "Você não pode cadastrar uma task com o mesmo nome"
+      )
+    }
+    */
+
     //TODO - add new task - ok
   }
 
   function handleToggleTaskDone(id: number) {
     const updateTasks = tasks.map(task => ({...task}))
     
-    const taskWillChange = updateTasks.find( item => item.id === id)
+    const taskWillChangeDone = updateTasks.find( item => item.id === id)
 
-    if (taskWillChange != undefined){
-      taskWillChange.done = !taskWillChange.done
+    if (taskWillChangeDone != undefined){
+      taskWillChangeDone.done = !taskWillChangeDone.done
     } 
 
     setTasks([...updateTasks])
@@ -33,10 +63,36 @@ export function Home() {
   }
 
   function handleRemoveTask(id: number) {
-    const updatedTasks = tasks.filter(task => task.id != id)
+    Alert.alert(
+      "Remover item",
+      "Tem certeza que você deseja remover esse item?",
+      [
+        {
+          text: "Não",
+          style: "cancel"
+        },
+        {
+          text: "Sim",
+          style: "destructive",
+          onPress: () => {
+            const updatedTasks = tasks.filter(task => task.id != id)
+        
+            setTasks(updatedTasks)
+          }
+        },
+      ]
+    
+    )
+    //TODO - remove task from state - ok
+  }
+
+  function handleEditTask(taskEdit: TaskEdit){
+    const updatedTasks = tasks.map(task => ({...task}))
+
+    const taskWillEdit = updatedTasks.find( item => item.id === taskEdit.taskId )
+    taskWillEdit.title = taskEdit.taskNewTitle
 
     setTasks(updatedTasks)
-    //TODO - remove task from state - ok
   }
 
   return (
@@ -49,6 +105,7 @@ export function Home() {
         tasks={tasks} 
         toggleTaskDone={handleToggleTaskDone}
         removeTask={handleRemoveTask} 
+        editTask={handleEditTask}
       />
     </View>
   )
