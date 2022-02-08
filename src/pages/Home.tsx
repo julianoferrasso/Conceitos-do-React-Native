@@ -5,9 +5,9 @@ import { Header } from '../components/Header';
 import { Task, TasksList } from '../components/TasksList';
 import { TodoInput } from '../components/TodoInput';
 
-interface TaskEdit {
-  taskId: number,
-  taskNewTitle: string
+type EditTaskArgs = {
+  taskId: number;
+  taskNewTitle: string;
 }
 
 export function Home() {
@@ -28,23 +28,6 @@ export function Home() {
       done: false
     }
     setTasks([...tasks, data])
-
-    
-    /*
-    if(!findTask){
-      const data = {
-        id: new Date().getTime(),
-        title: newTaskTitle,
-        done: false
-      }
-      setTasks([...tasks, data])
-    } else {
-      Alert.alert(
-        "Task já cadastrada",
-        "Você não pode cadastrar uma task com o mesmo nome"
-      )
-    }
-    */
 
     //TODO - add new task - ok
   }
@@ -86,11 +69,16 @@ export function Home() {
     //TODO - remove task from state - ok
   }
 
-  function handleEditTask(taskEdit: TaskEdit){
+  function handleEditTask({taskId, taskNewTitle}: EditTaskArgs){
     const updatedTasks = tasks.map(task => ({...task}))
 
-    const taskWillEdit = updatedTasks.find( item => item.id === taskEdit.taskId )
-    taskWillEdit.title = taskEdit.taskNewTitle
+    const taskWillEdit = updatedTasks.find( item => item.id === taskId )
+
+    if (!taskWillEdit) {
+      return;
+    }
+
+    taskWillEdit.title = taskNewTitle
 
     setTasks(updatedTasks)
   }
