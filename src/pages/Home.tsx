@@ -42,7 +42,6 @@ export function Home() {
     } 
 
     setTasks([...updateTasks])
-    //TODO - toggle task done if exists - ok 
   }
 
   function handleRemoveTask(id: number) {
